@@ -1,0 +1,15 @@
+version: "3.7"
+
+services:
+  # jupyterlab with pyspark
+  pyspark:
+    # image: jupyter/pyspark-notebook:latest
+    build: .
+    environment:
+      JUPYTER_ENABLE_LAB: "yes"
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./work:/home/jovyan/work
+
+# docker run --rm -p 10000:8888 -e JUPYTER_ENABLE_LAB=yes -v "$PWD":/home/jovyan/work jupyter/pyspark-notebook
