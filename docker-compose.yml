@@ -1,10 +1,10 @@
 version: "3.7"
 networks:
   demo-net:
+
+
 services:
-  # jupyterlab with pyspark
   pyspark:
-    # image: jupyter/pyspark-notebook:latest
     build: .
     environment:
       JUPYTER_ENABLE_LAB: "yes"
@@ -14,6 +14,11 @@ services:
       - demo-net
     volumes:
       - ./work:/home/jovyan/work
+    depends_on:
+      - minio
+    # Carregar variáveis de ambiente do .env
+    env_file:
+      - .env
 
   postgres:
     image: postgres:12-alpine
@@ -40,3 +45,20 @@ services:
     deploy:
       restart_policy:
         condition: on-failure
+
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    environment:
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin123
+    ports:
+      - "9000:9000"
+    command: server /data
+    networks:
+      - demo-net
+    volumes:
+      - minio_data:/data
+
+volumes:
+  minio_data:
