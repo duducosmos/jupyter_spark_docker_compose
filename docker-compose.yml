@@ -1,5 +1,6 @@
 version: "3.7"
-
+networks:
+  demo-net:
 services:
   # jupyterlab with pyspark
   pyspark:
@@ -9,7 +10,33 @@ services:
       JUPYTER_ENABLE_LAB: "yes"
     ports:
       - "8888:8888"
+    networks:
+      - demo-net
     volumes:
       - ./work:/home/jovyan/work
 
-# docker run --rm -p 10000:8888 -e JUPYTER_ENABLE_LAB=yes -v "$PWD":/home/jovyan/work jupyter/pyspark-notebook
+  postgres:
+    image: postgres:12-alpine
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: postgres1234
+      POSTGRES_DB: bakery
+    ports:
+      - "5432:5432/tcp"
+    networks:
+      - demo-net
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+  adminer:
+    image: adminer:latest
+    ports:
+      - "8080:8080/tcp"
+    networks:
+      - demo-net
+    deploy:
+      restart_policy:
+        condition: on-failure
