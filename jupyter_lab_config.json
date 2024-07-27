@@ -2,5 +2,9 @@
     "NotebookApp": {
         "allow_root": true,
         "token": ""
+    },
+    "ServerApp": {
+        "allow_origin": "*",
+        "token": ""
     }
 }
