@@ -17,7 +17,6 @@ services:
       - ./data:/home/jovyan/data
     depends_on:
       - minio
-    # Carregar variáveis de ambiente do .env
     env_file:
       - .env
 
@@ -51,11 +50,12 @@ services:
     image: minio/minio:latest
     container_name: minio
     environment:
-      MINIO_ACCESS_KEY: minioadmin
-      MINIO_SECRET_KEY: minioadmin123
+      MINIO_ROOT_USER: ROOTUSER
+      MINIO_ROOT_PASSWORD: ROOTPASS123
     ports:
-      - "9000:9000"
-    command: server /data
+      - "9000:9000" # Porta principal para acessar o MinIO
+      - "9001:9001" # Porta para o console do MinIO
+    command: server /data --console-address ":9001" # Configuração do comando
     networks:
       - demo-net
     volumes:
